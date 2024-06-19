@@ -9,6 +9,13 @@ const TodoItem = ({ todo, setTodos, editingTodo, setEditingTodo, newTitle, setNe
         // - 요청 본문에는 TodoItem의 완료 상태를 포함합니다.
         // - 완료 상태가 성공적으로 업데이트되면 서버에서 모든 TodoItem을 다시 가져와 상태를 업데이트합니다.
         // - 요청 중 오류가 발생하면 이를 콘솔에 기록합니다.
+        try {
+            await axios.put(`http://localhost:8080/api/todos/${id}`, { completed: completed ? true : false, title: todo.title });
+            const response = await axios.get('http://localhost:8080/api/todos');
+            setTodos(response.data);
+        } catch (error) {
+            console.error('Error updating todo:', error);
+        }
     };
     
     const saveEdit = async (id) => {
@@ -17,6 +24,15 @@ const TodoItem = ({ todo, setTodos, editingTodo, setEditingTodo, newTitle, setNe
         // - 요청 본문에는 수정된 TodoItem의 제목과 완료 상태를 포함합니다.
         // - 제목이 성공적으로 수정되면 서버에서 모든 TodoItem을 다시 가져와 상태를 업데이트합니다.
         // - 요청 중 오류가 발생하면 이를 콘솔에 기록합니다.
+        try {
+            await axios.put(`http://localhost:8080/api/todos/${id}`, { title: newTitle, completed: todo.completed });
+            const response = await axios.get('http://localhost:8080/api/todos');
+            setTodos(response.data);
+            setEditingTodo(null);
+            setNewTitle('');
+        } catch (error) {
+            console.error('Error saving edit:', error);
+        }
     };
     
 
@@ -25,6 +41,13 @@ const TodoItem = ({ todo, setTodos, editingTodo, setEditingTodo, newTitle, setNe
         // - axios를 사용하여 서버의 /api/todos/:id 엔드포인트에 DELETE 요청을 보냅니다.
         // - TodoItem이 성공적으로 삭제되면 서버에서 모든 TodoItem을 다시 가져와 상태를 업데이트합니다.
         // - 요청 중 오류가 발생하면 이를 콘솔에 기록합니다.
+        try {
+            await axios.delete(`http://localhost:8080/api/todos/${id}`);
+            const response = await axios.get('http://localhost:8080/api/todos');
+            setTodos(response.data);
+        } catch (error) {
+            console.error('Error deleting todo:', error);
+        }
     };
     
 
